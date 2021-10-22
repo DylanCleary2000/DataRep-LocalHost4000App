@@ -10,7 +10,7 @@ export class Read extends React.Component {
 
     componentDidMount()//Life Cycle Hook with a Component.
     {//aysnchronous!
-        axios.get('https://jsonblob.com/api/jsonblob/894944504570986496')
+        axios.get('https://jsonblob.com/api/jsonblob/894944504570986496')//Using Axios for HTTP requests to jsonblob.com
             .then((response) => {
                 this.setState({
                     movies: response.data.movies
