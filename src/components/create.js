@@ -56,7 +56,7 @@ export class Create extends Component {
         })
     }
 
-
+//After values have been enetered into the input boxes,triggers onChange and passed values to their associated methods.
     render() {
         return (
             <div>//
