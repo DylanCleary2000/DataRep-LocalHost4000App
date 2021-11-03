@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import axios from 'axios';
 
 
 
@@ -24,7 +25,7 @@ export class Create extends Component {
 
     }
 
-    
+
     onChangeMovieName(event) {
         this.setState({
             Title: event.target.value
@@ -43,20 +44,31 @@ export class Create extends Component {
         })
     }
 
+    //Now posts data to server as well as natively in the application.
     // Outputs to the browser
     handleSubmit(event) {
+        event.preventDefault();
         alert('Movie Name: ' + this.state.Title +
             ' Movie Year: ' + this.state.Year +
             ' Movie Poster ' + this.state.Poster);
-        event.preventDefault();
-        this.setState({
-            Title: '',
-            Year: '',
-            Poster: ''
-        })
+
+        const newMovie = {
+            title: this.state.Title,
+            year: this.state.Year,
+            poster: this.state.Poster
+        }//Axios again for handling HTTP
+        axios.post('http://localhost:4000/api/movies', newMovie)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+
     }
 
-//After values have been enetered into the input boxes,triggers onChange and passed values to their associated methods.
+    //After values have been entered into the input boxes,triggers onChange and passed values to their associated methods.
     render() {
         return (
             <div>//
