@@ -93,6 +93,7 @@ app.post('/api/movies', (req, res) => {
     console.log(req.body.year);
     console.log(req.body.poster);
 
+    //Creates document in our mongo database.
     MovieModel.create({
         title: req.body.title,
         year: req.body.year,
