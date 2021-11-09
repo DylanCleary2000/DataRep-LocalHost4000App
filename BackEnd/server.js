@@ -3,6 +3,7 @@ const app = express()
 const port = 4000
 //Install Cors - Cross Origin Resource Sharing.(ON SERVER)
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 
 app.use(cors());
@@ -17,7 +18,25 @@ app.use(function (req, res, next) {
 //Parse application/json
 app.use(express.json());
 //parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false}));
+app.use(express.urlencoded({ extended: false }));
+
+//Connecting server to database
+const myConnectionString = 'mongodb+srv://admin:Sevta203@cluster0.njzou.mongodb.net/movies?retryWrites=true&w=majority';
+mongoose.connect(myConnectionString, { useNewUrlParser: true });
+
+const Schema = mongoose.Schema;
+
+//Defining Schema - What documents in database will look like
+var movieSchema = new Schema({
+    title: String,
+    year: String,
+    poster: String
+
+});
+
+//Use this model to interact with database.
+var MovieModel = mongoose.model("movie", movieSchema);
+
 
 
 app.get('/', (req, res) => {
@@ -26,41 +45,62 @@ app.get('/', (req, res) => {
 
 //Now server displays out movie data in JSON Format.
 app.get('/api/movies', (req, res) => {
-    const mymovies = [
+    // const mymovies = [
 
-        {
-            "Title": "Avengers: Infinity War",
-            "Year": "2018",
-            "imdbID": "tt4154756",
-            "Type": "movie",
-            "Poster": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_SX300.jpg"
-        },
-        {
-            "Title": "Captain America: Civil War",
-            "Year": "2016",
-            "imdbID": "tt3498820",
-            "Type": "movie",
-            "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ0MTgyNjAxMV5BMl5BanBnXkFtZTgwNjUzMDkyODE@._V1_SX300.jpg"
-        },
-        {
-            "Title": "World War Z",
-            "Year": "2013",
-            "imdbID": "tt0816711",
-            "Type": "movie",
-            "Poster": "https://m.media-amazon.com/images/M/MV5BNDQ4YzFmNzktMmM5ZC00MDZjLTk1OTktNDE2ODE4YjM2MjJjXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg"
-        }
+    //     {
+    //         "Title": "Avengers: Infinity War",
+    //         "Year": "2018",
+    //         "imdbID": "tt4154756",
+    //         "Type": "movie",
+    //         "Poster": "https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_SX300.jpg"
+    //     },
+    //     {
+    //         "Title": "Captain America: Civil War",
+    //         "Year": "2016",
+    //         "imdbID": "tt3498820",
+    //         "Type": "movie",
+    //         "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ0MTgyNjAxMV5BMl5BanBnXkFtZTgwNjUzMDkyODE@._V1_SX300.jpg"
+    //     },
+    //     {
+    //         "Title": "World War Z",
+    //         "Year": "2013",
+    //         "imdbID": "tt0816711",
+    //         "Type": "movie",
+    //         "Poster": "https://m.media-amazon.com/images/M/MV5BNDQ4YzFmNzktMmM5ZC00MDZjLTk1OTktNDE2ODE4YjM2MjJjXkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_SX300.jpg"
+    //     }
 
-    ];
-    //Able to pass more than one object/message in response.
-    res.status(200).json({ movies: mymovies });
+    // ];
+
+    MovieModel.find((err, data) => {
+        res.json(data);
+    })
+    
+    
+})
+//Get request and returns data at that ID
+app.get('/api/movies/:id', (req,res)=>{
+    console.log(req.params.id);
+
+    //Callback function for when an ID is found.
+    MovieModel.findById(req.params.id, (err,data)=>{
+        res.json(data);
+    })
 })
 
-app.post('api/movies', (req,res)=>
-{
-console.log('Movie Recieved');
-console.log(req.body.title);
-console.log(req.body.year);
-console.log(req.body.poster);
+app.post('/api/movies', (req, res) => {
+    console.log('Movie Recieved');
+    console.log(req.body.title);
+    console.log(req.body.year);
+    console.log(req.body.poster);
+
+    MovieModel.create({
+        title: req.body.title,
+        year: req.body.year,
+        poster: req.body.poster
+    })
+
+    //Response to confirm that movie has been added to database.
+    res.send('Item Added');
 })
 
 app.listen(port, () => {

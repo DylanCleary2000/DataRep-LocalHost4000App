@@ -10,11 +10,11 @@ export class Read extends React.Component {
 
     componentDidMount()//Life Cycle Hook with a Component.
     {//aysnchronous!
-        axios.get('http://localhost:4000/api/movies')//Now using our new API with Axios
+        axios.get('http://localhost:4000/api/movies')//Now using our new API with Axios 
             .then((response) => {
                 this.setState({
-                    movies: response.data.movies
-                })
+                    movies: response.data
+                });
             })
             .catch((error) => {
                 console.log(error);
