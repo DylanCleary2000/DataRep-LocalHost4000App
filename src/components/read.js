@@ -4,6 +4,12 @@ import axios from 'axios';
 
 export class Read extends React.Component {
 
+    constructor()
+    {
+        super();
+        this.ReloadData = this.ReloadData.bind(this);
+    }
+
     state = {
         movies: []
     };
@@ -21,10 +27,25 @@ export class Read extends React.Component {
             })
     }
 
+    //Refreshes Movie data being displayed
+    ReloadData()
+    {
+        axios.get('http://localhost:4000/api/movies')
+        .then((response) => {
+            this.setState({
+                movies: response.data
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }
+
     render() {
         return (
             <div>
-                <Movies movies={this.state.movies}></Movies>
+                {/* Passes ReloadData functionality to its child "movies.js" */}
+                <Movies movies={this.state.movies} ReloadData={this.ReloadData}></Movies>
             </div>
         );
     }
