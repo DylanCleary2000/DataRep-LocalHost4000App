@@ -4,6 +4,7 @@ const port = 4000
 //Install Cors - Cross Origin Resource Sharing.(ON SERVER)
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 
 app.use(cors());
@@ -14,6 +15,10 @@ app.use(function (req, res, next) {
         "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+//Configuration - telling where build and static folders are.
+app.use(express.static(path.join(__dirname,'../build')));
+app.use('/static',express.static(path.join(__dirname,'build//static')));
 
 //Parse application/json
 app.use(express.json());
@@ -123,6 +128,12 @@ app.delete('/api/movies/:id',(req,res)=>{
     })
 })
 
+//For any other URL will send back index.html.
+app.get('*',(req,res)=>{
+res.sendFile(path.join(__dirname+'/../build/index.html'));
+
+
+})
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
